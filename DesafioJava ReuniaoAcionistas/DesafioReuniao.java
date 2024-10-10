@@ -53,7 +53,8 @@ class SistemaAcionistas {
                 analisesFiltradas.add(analise.descricao);
             }
         }
-
+            // Retorna a lista de análises filtradas
+            return analisesFiltradas;
     
     }
 
