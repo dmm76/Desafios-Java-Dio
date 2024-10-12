@@ -1,4 +1,4 @@
-//package DesafioJava CofreSeguro;
+package DesafioJava_CofreSeguro;
 
 import java.util.Scanner;
 
