@@ -22,7 +22,7 @@ public class ContaDao {
         return em.createQuery("SELECT c FROM Conta c", Conta.class).getResultList();
     }
 
-    public Conta buscarPorId(Long id) {
+    public Conta buscarPorId(Integer id) {
         return em.find(Conta.class, id);
     }
 

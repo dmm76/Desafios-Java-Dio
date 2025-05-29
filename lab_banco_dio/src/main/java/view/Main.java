@@ -4,62 +4,100 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+        while (true) {
+            String opcaoPrincipal = JOptionPane.showInputDialog("""
+                    ==== MENU PRINCIPAL ====
+                    1 - Cadastro de Clientes
+                    2 - Contas
+                    3 - Transações
+                    0 - Sair
+                    """);
+
+            if (opcaoPrincipal == null || opcaoPrincipal.equals("0")) break;
+
+            switch (opcaoPrincipal) {
+                case "1" -> menuClientes();
+                case "2" -> menuContas();
+                case "3" -> menuTransacoes();
+                default -> JOptionPane.showMessageDialog(null, "Opção inválida.");
+            }
+        }
+    }
+
+    private static void menuClientes() {
         ClienteView clienteView = new ClienteView();
-        PessoaFisicaView pessoaFisicaView = new PessoaFisicaView();
-        PessoaJuridicaView pessoaJuridicaView = new PessoaJuridicaView();
-        ContaCorrenteView contaCorrenteView = new ContaCorrenteView();
-        ContaPoupancaView contaPoupancaView = new ContaPoupancaView();
+        PessoaFisicaView pfView = new PessoaFisicaView();
+        PessoaJuridicaView pjView = new PessoaJuridicaView();
 
-        String[] opcoes = {
-                "Cadastrar Pessoa Física",
-                "Cadastrar Pessoa Jurídica",
-                "Consultar Clientes",
-                "Alterar Cliente",
-                "Remover Cliente",
-                "Cadastrar Conta Corrente",
-                "Cadastrar Conta Poupança",
-                "Sair"
-        };
+        while (true) {
+            String opcao = JOptionPane.showInputDialog("""
+                    ==== CADASTRO DE CLIENTES ====
+                    1 - Pessoa Física
+                    2 - Pessoa Jurídica
+                    3 - Alterar Cliente
+                    4 - Remover Cliente
+                    5 - Consultar Clientes
+                    0 - Voltar
+                    """);
 
-        int opcao = -1;
-
-        while (opcao != 7) {
-            opcao = JOptionPane.showOptionDialog(
-                    null,
-                    "Selecione uma opção:",
-                    "Menu Principal",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    opcoes,
-                    opcoes[0]
-            );
+            if (opcao == null || opcao.equals("0")) break;
 
             switch (opcao) {
-                case 0 -> pessoaFisicaView.cadastrarPessoaFisica();
-                case 1 -> pessoaJuridicaView.cadastrarPessoaJuridica();
-                case 2 -> {
-                    String resultado = clienteView.consultarCliente();
-                    JOptionPane.showMessageDialog(null, resultado);
+                case "1" -> pfView.cadastrarPessoaFisica();
+                case "2" -> pjView.cadastrarPessoaJuridica();
+                case "3" -> {
+                    String idAlt = JOptionPane.showInputDialog("ID do Cliente para alterar:");
+                    clienteView.alterarCliente(Integer.valueOf(idAlt));
                 }
-                case 3 -> {
-                    String idStr = JOptionPane.showInputDialog("Digite o ID do cliente:");
-                    if (idStr != null && !idStr.isBlank()) {
-                        Integer id = Integer.parseInt(idStr);
-                        clienteView.alterarCliente(id);
-                    }
+                case "4" -> {
+                    String idRem = JOptionPane.showInputDialog("ID do Cliente para remover:");
+                    clienteView.removerCliente(Integer.valueOf(idRem));
                 }
-                case 4 -> {
-                    String idStr = JOptionPane.showInputDialog("Digite o ID do cliente a remover:");
-                    if (idStr != null && !idStr.isBlank()) {
-                        Integer id = Integer.parseInt(idStr);
-                        clienteView.removerCliente(id);
-                    }
-                }
-                case 5 -> contaCorrenteView.cadastrarContaCorrente();
-                case 6 -> contaPoupancaView.cadastrarContaPoupanca();
-                case 7 -> JOptionPane.showMessageDialog(null, "Encerrando o programa. Até mais!");
-                default -> opcao = 7;
+                case "5" -> JOptionPane.showMessageDialog(null, clienteView.consultarCliente());
+                default -> JOptionPane.showMessageDialog(null, "Opção inválida.");
+            }
+        }
+    }
+
+    private static void menuContas() {
+        ContaCorrenteView ccView = new ContaCorrenteView();
+        ContaPoupancaView cpView = new ContaPoupancaView();
+
+        while (true) {
+            String opcao = JOptionPane.showInputDialog("""
+                    ==== CONTAS ====
+                    1 - Cadastrar Conta Corrente
+                    2 - Cadastrar Conta Poupança
+                    0 - Voltar
+                    """);
+
+            if (opcao == null || opcao.equals("0")) break;
+
+            switch (opcao) {
+                case "1" -> ccView.cadastrarContaCorrente();
+                case "2" -> cpView.cadastrarContaPoupanca();
+                default -> JOptionPane.showMessageDialog(null, "Opção inválida.");
+            }
+        }
+    }
+
+    private static void menuTransacoes() {
+        TransacaoView transacaoView = new TransacaoView();
+
+        while (true) {
+            String opcao = JOptionPane.showInputDialog("""
+                    ==== TRANSAÇÕES ====
+                    1 - Realizar Transação
+                    2 - Consultar Transações
+                    0 - Voltar
+                    """);
+
+            if (opcao == null || opcao.equals("0")) break;
+
+            switch (opcao) {
+                case "1" -> transacaoView.realizarTransacao();
+                case "2" -> JOptionPane.showMessageDialog(null, transacaoView.consultarTransacoes());
+                default -> JOptionPane.showMessageDialog(null, "Opção inválida.");
             }
         }
     }
