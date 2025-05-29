@@ -1,10 +1,10 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "conta_poupanca")
+@PrimaryKeyJoinColumn(name = "idconta_poupanca")
 public class ContaPoupanca extends Conta {
 
     private double taxaRendimento;

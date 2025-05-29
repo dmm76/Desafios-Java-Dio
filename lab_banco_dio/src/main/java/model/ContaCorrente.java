@@ -1,10 +1,10 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "conta_corrente")
+@PrimaryKeyJoinColumn(name = "idconta_corrente")
 public class ContaCorrente extends Conta {
 
     private double limiteChequeEspecial;

@@ -45,14 +45,14 @@ public class Main {
                 case 3 -> {
                     String idStr = JOptionPane.showInputDialog("Digite o ID do cliente:");
                     if (idStr != null && !idStr.isBlank()) {
-                        Long id = Long.parseLong(idStr);
+                        Integer id = Integer.parseInt(idStr);
                         clienteView.alterarCliente(id);
                     }
                 }
                 case 4 -> {
                     String idStr = JOptionPane.showInputDialog("Digite o ID do cliente a remover:");
                     if (idStr != null && !idStr.isBlank()) {
-                        Long id = Long.parseLong(idStr);
+                        Integer id = Integer.parseInt(idStr);
                         clienteView.removerCliente(id);
                     }
                 }

@@ -9,7 +9,7 @@ public class Transacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idtransacao;
 
     private LocalDateTime dataHora;
 
@@ -45,8 +45,8 @@ public class Transacao {
 
     // Getters e Setters
 
-    public Long getId() {
-        return id;
+    public Long getIdtransacao() {
+        return idtransacao;
     }
 
     public LocalDateTime getDataHora() {

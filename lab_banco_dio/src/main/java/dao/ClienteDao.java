@@ -20,7 +20,7 @@ public class ClienteDao {
         return em.createQuery("SELECT c FROM Cliente c", Cliente.class).getResultList();
     }
 
-    public Cliente buscarPorID(Long id){
+    public Cliente buscarPorID(Integer id){
         return em.find(Cliente.class, id);
     }
 

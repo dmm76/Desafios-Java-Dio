@@ -11,7 +11,7 @@ public abstract class Conta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer idconta;
 
     private String numero;
     private double saldo;
@@ -57,12 +57,12 @@ public abstract class Conta {
         }
     }
 
-    public Long getId() {
-        return id;
+    public Integer getIdconta() {
+        return idconta;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdconta(Integer id) {
+        this.idconta = id;
     }
 
     public String getNumero() {

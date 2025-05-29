@@ -22,17 +22,17 @@ public class ClienteView {
             return "Nenhum cliente cadastrado.";
         }
 
-        StringBuilder resultado = new StringBuilder("ID - Nome - Tipo\n");
+        StringBuilder resultado = new StringBuilder("ID - Nome - Tipo - Documento\n");
         for (Cliente cliente : todos) {
             resultado.append(cliente.getIdCliente())
                     .append(" - ")
                     .append(cliente.getNomeCliente())
                     .append(" - ");
 
-            if (cliente instanceof PessoaFisica) {
-                resultado.append("Pessoa Física\n");
-            } else if (cliente instanceof PessoaJuridica) {
-                resultado.append("Pessoa Jurídica\n");
+            if (cliente instanceof PessoaFisica pf) {
+                resultado.append("Pessoa Física - CPF: ").append(pf.getCpf()).append("\n");
+            } else if (cliente instanceof PessoaJuridica pj) {
+                resultado.append("Pessoa Jurídica - CNPJ: ").append(pj.getCnpj()).append("\n");
             } else {
                 resultado.append("Desconhecido\n");
             }
@@ -40,7 +40,7 @@ public class ClienteView {
         return resultado.toString();
     }
 
-    public boolean alterarCliente(Long id) {
+    public boolean alterarCliente(Integer id) {
         EntityManager em = JPAUtil.getEntityManager();
         ClienteDao clienteDao = new ClienteDao(em);
         Cliente cliente = clienteDao.buscarPorID(id);
@@ -56,7 +56,10 @@ public class ClienteView {
         String telefone = JOptionPane.showInputDialog("Telefone:", cliente.getTelefoneCliente());
         String endereco = JOptionPane.showInputDialog("Endereço:", cliente.getEnderecoCliente());
 
-        if (nome == null || nome.isBlank()) {
+        if (nome == null || nome.isBlank() ||
+                email == null || email.isBlank() ||
+                telefone == null || telefone.isBlank() ||
+                endereco == null || endereco.isBlank()) {
             JOptionPane.showMessageDialog(null, "Alteração cancelada.");
             em.close();
             return false;
@@ -68,16 +71,30 @@ public class ClienteView {
         cliente.setTelefoneCliente(telefone);
         cliente.setEnderecoCliente(endereco);
 
-        if (cliente instanceof PessoaFisica) {
-            PessoaFisica pf = (PessoaFisica) cliente;
+        if (cliente instanceof PessoaFisica pf) {
             String cpf = JOptionPane.showInputDialog("CPF:", pf.getCpf());
             String dataNasc = JOptionPane.showInputDialog("Data de Nascimento:", pf.getDataNascimento());
+
+            if (cpf == null || cpf.isBlank() || dataNasc == null || dataNasc.isBlank()) {
+                JOptionPane.showMessageDialog(null, "Alteração cancelada.");
+                em.getTransaction().rollback();
+                em.close();
+                return false;
+            }
+
             pf.setCpf(cpf);
             pf.setDataNascimento(dataNasc);
-        } else if (cliente instanceof PessoaJuridica) {
-            PessoaJuridica pj = (PessoaJuridica) cliente;
+        } else if (cliente instanceof PessoaJuridica pj) {
             String cnpj = JOptionPane.showInputDialog("CNPJ:", pj.getCnpj());
             String razao = JOptionPane.showInputDialog("Razão Social:", pj.getRazaoSocial());
+
+            if (cnpj == null || cnpj.isBlank() || razao == null || razao.isBlank()) {
+                JOptionPane.showMessageDialog(null, "Alteração cancelada.");
+                em.getTransaction().rollback();
+                em.close();
+                return false;
+            }
+
             pj.setCnpj(cnpj);
             pj.setRazaoSocial(razao);
         }
@@ -87,7 +104,7 @@ public class ClienteView {
         return true;
     }
 
-    public boolean removerCliente(Long id) {
+    public boolean removerCliente(Integer id) {
         EntityManager em = JPAUtil.getEntityManager();
         ClienteDao clienteDao = new ClienteDao(em);
         Cliente cliente = clienteDao.buscarPorID(id);

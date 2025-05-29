@@ -20,7 +20,7 @@ public class ContaCorrenteView {
             em.close();
             return false;
         }
-        Long idCliente = Long.parseLong(idClienteStr);
+        Integer idCliente = Integer.parseInt(idClienteStr);
         Cliente cliente = em.find(Cliente.class, idCliente);
         if (cliente == null) {
             JOptionPane.showMessageDialog(null, "Cliente não encontrado.");
