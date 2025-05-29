@@ -1,52 +1,115 @@
 package model;
 
-public abstract class Conta implements IConta {
-    private static final int AGENCIA_PADRAO = 1;
-    private static int SEQUENCIAL = 1;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-    protected int agencia;
-    protected int numero;
-    protected double saldo;
-    protected Cliente cliente;
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "conta")
+public abstract class Conta {
 
-    public Conta(Cliente cliente) {
-        this.agencia = Conta.AGENCIA_PADRAO;
-        this.numero = SEQUENCIAL++;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String numero;
+    private double saldo;
+    private String agencia;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
+
+    @ManyToOne
+    @JoinColumn(name = "id_banco")
+    private Banco banco;
+
+    @OneToMany(mappedBy = "contaOrigem", cascade = CascadeType.ALL)
+    private List<Transacao> transacoes = new ArrayList<>();
+
+    public Conta() {}
+
+    public Conta(String numero, String agencia, Cliente cliente, Banco banco) {
+        this.numero = numero;
+        this.agencia = agencia;
         this.cliente = cliente;
+        this.banco = banco;
     }
 
-    @Override
-    public void sacar(double valor) {
-        saldo -= valor;
-    }
-
-    @Override
     public void depositar(double valor) {
-        saldo += valor;
+        this.saldo += valor;
+        this.transacoes.add(new Transacao(TipoTransacao.DEPOSITO, valor, this, null));
     }
 
-    @Override
-    public void transferir(double valor, IConta contaDestino) {
-        this.sacar(valor);
-        contaDestino.depositar(valor);
+    public void sacar(double valor) {
+        if (this.saldo >= valor) {
+            this.saldo -= valor;
+            this.transacoes.add(new Transacao(TipoTransacao.SAQUE, valor, this, null));
+        }
     }
 
-    public int getAgencia() {
-        return agencia;
+    public void transferir(double valor, Conta destino) {
+        if (this.saldo >= valor) {
+            this.saldo -= valor;
+            destino.depositar(valor);
+            this.transacoes.add(new Transacao(TipoTransacao.TRANSFERENCIA, valor, this, destino));
+        }
     }
 
-    public int getNumero() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNumero() {
         return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 
     public double getSaldo() {
         return saldo;
     }
 
-    protected void imprimirInfosComuns() {
-        System.out.println(String.format("Titular: %s", this.cliente.getNomeCliente()));
-        System.out.printf("Agencia: %d%n", this.agencia);
-        System.out.printf("Numero: %d%n", this.numero);
-        System.out.printf("Saldo: %.2f%n", this.saldo);
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
+    }
+
+    public String getAgencia() {
+        return agencia;
+    }
+
+    public void setAgencia(String agencia) {
+        this.agencia = agencia;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Banco getBanco() {
+        return banco;
+    }
+
+    public void setBanco(Banco banco) {
+        this.banco = banco;
+    }
+
+    public List<Transacao> getTransacoes() {
+        return transacoes;
+    }
+
+    public void setTransacoes(List<Transacao> transacoes) {
+        this.transacoes = transacoes;
     }
 }

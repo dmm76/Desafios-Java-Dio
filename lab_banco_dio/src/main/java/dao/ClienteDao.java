@@ -7,34 +7,48 @@ import java.util.List;
 
 public class ClienteDao {
     private EntityManager em;
+
     public ClienteDao(EntityManager em){
         this.em = em;
     }
-    //cadastrar
+
     public void cadastrar(Cliente cliente){
         em.persist(cliente);
     }
-    //listar
+
     public List<Cliente> buscarTodos(){
-        String jpql = "Select c FROM Cliente c";
-        return em.createQuery(jpql, Cliente.class).getResultList();
+        return em.createQuery("SELECT c FROM Cliente c", Cliente.class).getResultList();
     }
-    //buscar por Id
-    public Cliente buscarPorID(int id){
+
+    public Cliente buscarPorID(Long id){
         return em.find(Cliente.class, id);
     }
-    //remover
+
     public void remover(Cliente cliente){
+        if (!em.contains(cliente)) {
+            cliente = em.merge(cliente);
+        }
         em.remove(cliente);
     }
-    //alterar
+
     public void alterar(Cliente cliente){
         em.merge(cliente);
     }
+
     public boolean existeCpf(String cpf) {
-        Long count = em.createQuery("SELECT COUNT(c) FROM Cliente c WHERE c.cpfCliente = :cpf", Long.class)
+        Long count = em.createQuery(
+                        "SELECT COUNT(pf) FROM PessoaFisica pf WHERE pf.cpf = :cpf", Long.class)
                 .setParameter("cpf", cpf)
                 .getSingleResult();
         return count > 0;
     }
+
+    public boolean existeCnpj(String cnpj) {
+        Long count = em.createQuery(
+                        "SELECT COUNT(pj) FROM PessoaJuridica pj WHERE pj.cnpj = :cnpj", Long.class)
+                .setParameter("cnpj", cnpj)
+                .getSingleResult();
+        return count > 0;
+    }
+
 }

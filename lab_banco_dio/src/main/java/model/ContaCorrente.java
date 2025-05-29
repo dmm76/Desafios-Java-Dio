@@ -1,13 +1,26 @@
 package model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "conta_corrente")
 public class ContaCorrente extends Conta {
-    public ContaCorrente(Cliente cliente) {
-        super(cliente);
+
+    private double limiteChequeEspecial;
+
+    public ContaCorrente() {}
+
+    public ContaCorrente(String numero, String agencia, Cliente cliente, Banco banco, double limiteChequeEspecial) {
+        super(numero, agencia, cliente, banco);
+        this.limiteChequeEspecial = limiteChequeEspecial;
     }
 
-    @Override
-    public void imprimirExtrato() {
-        System.out.println("=== Extrato Conta Corrente ===");
-        super.imprimirInfosComuns();
+    public double getLimiteChequeEspecial() {
+        return limiteChequeEspecial;
+    }
+
+    public void setLimiteChequeEspecial(double limiteChequeEspecial) {
+        this.limiteChequeEspecial = limiteChequeEspecial;
     }
 }
